@@ -1,74 +1,50 @@
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.List;
 
 // create new class #1
 public class Statement {
-  private Customer _customer;
-  private Vector   _rentals;
+
+    private Customer     customer;
+    private List<Rental> rentals;
 
     public Statement(Customer customer) {
-        _customer = customer;
-        _rentals  = customer._rentals;
+        this.customer = customer;
+        this.rentals  = customer.getRentals();
     }
 
-    // moving method #1 from Customer to Statement
-    // renaming operations #1
+    // Moving method 1 (from Customer), Renaming 1 (statement() -> createStatement())
     public String createStatement() {
-        double      totalAmount          = 0;
-        int         frequentRenterPoints = 0;
-        Enumeration rentals              = _rentals.elements();
-        String      result               = "Rental Record for " + _customer.getName() + "\n";
-        
-        while (rentals.hasMoreElements()) {
-            double thisAmount = 0;
-            Rental each       = (Rental) rentals.nextElement();
-            
-            // method extraction #1 
-            thisAmount = determineAmount(each);
-            
-            // add frequent renter points
-            frequentRenterPoints++;
-            
-            // add bonus for a two day new release rental
-            if ((each.getMovie().getPriceCode() == Movie.NEW_RELEASE) &&
-                (each.getDaysRented() > 1)) {
-                    frequentRenterPoints++;
-            }
-            
-            // show figures for this rental
-            result += "\t" + each.getMovie().getTitle() +
-                        "\t" + String.valueOf(thisAmount) + "\n";
-            totalAmount += thisAmount;
+        double totalAmount          = 0;
+        int    frequentRenterPoints = 0;
+        StringBuilder result = new StringBuilder("Rental Record for " + customer.getName() + "\n");
+
+        for (Rental rental : rentals) {
+            frequentRenterPoints += computeFrequentRenterPoints(rental);
+
+            // Method extraction #2: formatRentalLine
+            result.append(formatRentalLine(rental));
+            totalAmount += rental.getCharge();
         }
-        
-        // add footer lines
-        result += "Amount owed is " + String.valueOf(totalAmount) + "\n";
-        result += "You earned " + String.valueOf(frequentRenterPoints) +
-                    " frequent renter points";
-        return result;
+
+        // Method extraction #3: formatFooter
+        result.append(formatFooter(totalAmount, frequentRenterPoints));
+        return result.toString();
     }
 
-    // moving method operations #1
-    // determine amounts for each line
-    private double determineAmount(Rental each) {
-        double thisAmount = 0;
-        switch (each.getMovie().getPriceCode()) {
-            case Movie.REGULAR:
-                thisAmount += 2;
-                if (each.getDaysRented() > 2) {
-                    thisAmount += (each.getDaysRented() - 2) * 1.5;
-                }
-                break;
-            case Movie.NEW_RELEASE:
-                thisAmount += each.getDaysRented() * 3;
-                break;
-            case Movie.CHILDRENS:
-                thisAmount += 1.5;
-                if (each.getDaysRented() > 3) {
-                    thisAmount += (each.getDaysRented() - 3) * 1.5;
-                }
-                break;
-        }
-        return thisAmount;
+    // Method extraction 1
+    // Method extraction 2
+    private String formatRentalLine(Rental rental) {
+        return "\t" + rental.getMovie().getTitle()
+                + "\t" + rental.getCharge() + "\n";
+    }
+
+    // Method extraction 3: builds the footer of the plain-text statement
+    private String formatFooter(double totalAmount, int frequentRenterPoints) {
+        return "Amount owed is " + totalAmount + "\n"
+                + "You earned " + frequentRenterPoints + " frequent renter points";
+    }
+
+    // Method extraction 4: computes frequent-renter points for one rental (delegates to Rental)
+    private int computeFrequentRenterPoints(Rental rental) {
+        return rental.getFrequentRenterPoints();
     }
 }

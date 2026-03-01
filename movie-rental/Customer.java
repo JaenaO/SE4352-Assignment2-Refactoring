@@ -1,19 +1,23 @@
-import java.util.Enumeration;
-import java.util.Vector;
-
+import java.util.ArrayList;
+import java.util.List;
 public class Customer {
-    private String _name;
-    private Vector _rentals = new Vector();
-    
-    public Customer (String name) {
-        _name = name;
+
+    private String        name;
+    private List<Rental>  rentals = new ArrayList<>();
+
+    public Customer(String name) {
+        this.name = name;
     }
-    
-    public void addRental(Rental arg) {
-        _rentals.addElement(arg);
+
+    public void addRental(Rental rental) {
+        rentals.add(rental);
     }
-    
+
     public String getName() {
-        return _name;
+        return name;
+    }
+
+    public List<Rental> getRentals() {
+        return rentals;
     }
 }

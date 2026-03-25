@@ -16,7 +16,7 @@ public class Rental {
         return movie;
     }
 
-    // Convenience methods that delegate to Movie's price strategy
+    // Delegates to Movie's pricing and frequent-renter-points strategies
     public double getCharge() {
         return movie.getCharge(daysRented);
     }

@@ -1,5 +1,4 @@
-// New class #5: concrete Price strategy for a children's movie
-public class ChildrensPrice extends Price {
+public class ChildrensPricingStrategy implements PricingStrategy {
 
     @Override
     public int getPriceCode() {

@@ -1,5 +1,4 @@
-// New class #3: concrete Price strategy for a regular-priced movie
-public class RegularPrice extends Price {
+public class RegularPricingStrategy implements PricingStrategy {
 
     @Override
     public int getPriceCode() {

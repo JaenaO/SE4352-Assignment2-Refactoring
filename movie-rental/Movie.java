@@ -5,7 +5,8 @@ public class Movie {
     public static final int NEW_RELEASE = 1;
 
     private String title;
-    private Price  price;
+    private PricingStrategy              pricingStrategy;
+    private FrequentRenterPointsStrategy frequentRenterPointsStrategy;
 
     public Movie(String title, int priceCode) {
         this.title = title;
@@ -13,21 +14,22 @@ public class Movie {
     }
 
     public int getPriceCode() {
-        return price.getPriceCode();
+        return pricingStrategy.getPriceCode();
     }
 
-    // setPriceCode keeps the int-based API for backward compatibility
-    // but internally stores a Price strategy object
     public void setPriceCode(int priceCode) {
         switch (priceCode) {
             case REGULAR:
-                price = new RegularPrice();
+                pricingStrategy = new RegularPricingStrategy();
+                frequentRenterPointsStrategy = new StandardFrequentRenterPoints();
                 break;
             case NEW_RELEASE:
-                price = new NewReleasePrice();
+                pricingStrategy = new NewReleasePricingStrategy();
+                frequentRenterPointsStrategy = new NewReleaseFrequentRenterPoints();
                 break;
             case CHILDRENS:
-                price = new ChildrensPrice();
+                pricingStrategy = new ChildrensPricingStrategy();
+                frequentRenterPointsStrategy = new StandardFrequentRenterPoints();
                 break;
             default:
                 throw new IllegalArgumentException("Incorrect Price Code: " + priceCode);
@@ -38,13 +40,11 @@ public class Movie {
         return title;
     }
 
-    // Moving method #2: charge calculation delegated to Price strategy
     public double getCharge(int daysRented) {
-        return price.getCharge(daysRented);
+        return pricingStrategy.getCharge(daysRented);
     }
 
-    // Moving method #3: frequent-renter-point bonus delegated to Price strategy
     public int getFrequentRenterPoints(int daysRented) {
-        return price.getFrequentRenterPoints(daysRented);
+        return frequentRenterPointsStrategy.getFrequentRenterPoints(daysRented);
     }
 }

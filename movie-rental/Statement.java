@@ -3,8 +3,8 @@ import java.util.List;
 // create new class #1
 public class Statement {
 
-    private Customer     customer;
-    private List<Rental> rentals;
+    private Customer              customer;
+    private List<RentalComponent> rentals;
 
     public Statement(Customer customer) {
         this.customer = customer;
@@ -17,7 +17,7 @@ public class Statement {
         int    frequentRenterPoints = 0;
         StringBuilder result = new StringBuilder("Rental Record for " + customer.getName() + "\n");
 
-        for (Rental rental : rentals) {
+        for (RentalComponent rental : rentals) {
             frequentRenterPoints += computeFrequentRenterPoints(rental);
 
             // Method extraction #2: formatRentalLine
@@ -32,7 +32,7 @@ public class Statement {
 
     // Method extraction 1
     // Method extraction 2
-    private String formatRentalLine(Rental rental) {
+    private String formatRentalLine(RentalComponent rental) {
         return "\t" + rental.getMovie().getTitle()
                 + "\t" + rental.getCharge() + "\n";
     }
@@ -44,7 +44,7 @@ public class Statement {
     }
 
     // Method extraction 4: computes frequent-renter points for one rental (delegates to Rental)
-    private int computeFrequentRenterPoints(Rental rental) {
+    private int computeFrequentRenterPoints(RentalComponent rental) {
         return rental.getFrequentRenterPoints();
     }
 }

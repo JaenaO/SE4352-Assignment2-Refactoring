@@ -3,8 +3,8 @@ import java.util.List;
 // create new class #6
 public class XmlStatement {
 
-    private Customer     customer;
-    private List<Rental> rentals;
+    private Customer              customer;
+    private List<RentalComponent> rentals;
 
     public XmlStatement(Customer customer) {
         this.customer = customer;
@@ -21,7 +21,7 @@ public class XmlStatement {
         xml.append("<statement>\n");
         xml.append(xmlTag("customer", customer.getName(), 1));
 
-        for (Rental rental : rentals) {
+        for (RentalComponent rental : rentals) {
             totalAmount          += rental.getCharge();
             frequentRenterPoints += rental.getFrequentRenterPoints();
 
@@ -36,7 +36,7 @@ public class XmlStatement {
     }
 
     // Method extraction #5: produces one <rental> block in XML
-    private String formatXmlRentalEntry(Rental rental) {
+    private String formatXmlRentalEntry(RentalComponent rental) {
         StringBuilder entry = new StringBuilder();
         entry.append(indent(1)).append("<rental>\n");
         entry.append(xmlTag("title",     rental.getMovie().getTitle(),          2));

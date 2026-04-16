@@ -5,10 +5,15 @@ public class Statement {
 
     private Customer              customer;
     private List<RentalComponent> rentals;
+    private CouponStrategy        couponStrategy;
 
     public Statement(Customer customer) {
         this.customer = customer;
         this.rentals  = customer.getRentals();
+        this.couponStrategy = new CompositeCouponStrategy(
+                new FiveOffFiveOrMoreRentalsCouponStrategy(),
+                new FreeMovieForTenPointsCouponStrategy()
+        );
     }
 
     // Moving method 1 (from Customer), Renaming 1 (statement() -> createStatement())
@@ -24,6 +29,8 @@ public class Statement {
             result.append(formatRentalLine(rental));
             totalAmount += rental.getCharge();
         }
+
+        totalAmount = couponStrategy.applyDiscount(customer, rentals, totalAmount, frequentRenterPoints);
 
         // Method extraction #3: formatFooter
         result.append(formatFooter(totalAmount, frequentRenterPoints));

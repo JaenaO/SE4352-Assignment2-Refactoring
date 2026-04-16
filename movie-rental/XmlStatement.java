@@ -5,10 +5,15 @@ public class XmlStatement {
 
     private Customer              customer;
     private List<RentalComponent> rentals;
+    private CouponStrategy        couponStrategy;
 
     public XmlStatement(Customer customer) {
         this.customer = customer;
         this.rentals  = customer.getRentals();
+        this.couponStrategy = new CompositeCouponStrategy(
+                new FiveOffFiveOrMoreRentalsCouponStrategy(),
+                new FreeMovieForTenPointsCouponStrategy()
+        );
     }
 
     // Renaming operation #6: method name xmlStatement (distinct from createStatement in Statement)
@@ -28,6 +33,8 @@ public class XmlStatement {
             // Method extraction #5: formatXmlRentalLine
             xml.append(formatXmlRentalEntry(rental));
         }
+
+        totalAmount = couponStrategy.applyDiscount(customer, rentals, totalAmount, frequentRenterPoints);
 
         // Method extraction #6: formatXmlFooter
         xml.append(formatXmlFooter(totalAmount, frequentRenterPoints));

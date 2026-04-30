@@ -6,6 +6,7 @@ public class XmlStatement {
     private Customer              customer;
     private List<RentalComponent> rentals;
     private CouponStrategy        couponStrategy;
+    private CouponPointsStrategy  couponPointsStrategy;
 
     public XmlStatement(Customer customer) {
         this.customer = customer;
@@ -13,6 +14,10 @@ public class XmlStatement {
         this.couponStrategy = new CompositeCouponStrategy(
                 new FiveOffFiveOrMoreRentalsCouponStrategy(),
                 new FreeMovieForTenPointsCouponStrategy()
+        );
+        this.couponPointsStrategy = new CompositeCouponPointsStrategy(
+                new TenPointsForTenDollarRentalCouponStrategy(),
+                new TwentyPointsForFourOrMoreRentalsCouponStrategy()
         );
     }
 
@@ -34,6 +39,7 @@ public class XmlStatement {
             xml.append(formatXmlRentalEntry(rental));
         }
 
+        frequentRenterPoints += couponPointsStrategy.extraPoints(customer, rentals, totalAmount);
         totalAmount = couponStrategy.applyDiscount(customer, rentals, totalAmount, frequentRenterPoints);
 
         // Method extraction #6: formatXmlFooter

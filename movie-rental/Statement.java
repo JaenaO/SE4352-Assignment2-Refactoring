@@ -6,6 +6,7 @@ public class Statement {
     private Customer              customer;
     private List<RentalComponent> rentals;
     private CouponStrategy        couponStrategy;
+    private CouponPointsStrategy  couponPointsStrategy;
 
     public Statement(Customer customer) {
         this.customer = customer;
@@ -13,6 +14,10 @@ public class Statement {
         this.couponStrategy = new CompositeCouponStrategy(
                 new FiveOffFiveOrMoreRentalsCouponStrategy(),
                 new FreeMovieForTenPointsCouponStrategy()
+        );
+        this.couponPointsStrategy = new CompositeCouponPointsStrategy(
+                new TenPointsForTenDollarRentalCouponStrategy(),
+                new TwentyPointsForFourOrMoreRentalsCouponStrategy()
         );
     }
 
@@ -30,6 +35,7 @@ public class Statement {
             totalAmount += rental.getCharge();
         }
 
+        frequentRenterPoints += couponPointsStrategy.extraPoints(customer, rentals, totalAmount);
         totalAmount = couponStrategy.applyDiscount(customer, rentals, totalAmount, frequentRenterPoints);
 
         // Method extraction #3: formatFooter
